@@ -3,19 +3,13 @@ function [Korrespondenzen_robust] = F_ransac(Korrespondenzen, varargin)
     % robusten Korrespondenzpunktpaaren
     
     %% Input parser
-    % Bekannte Variablen:
-    % epsilon       geschätzte Wahrscheinlichkeit
-    % p             gewünschte Wahrscheinlichkeit
-    % tolerance     Toleranz um als Teil des Consensus-Sets zu gelten
-    % x1_pixel      homogene Pixelkoordinaten
-    % x2_pixel      homogene Pixelkoordinaten
-    
+
     % set default values
     default_epsilon = 0.5;
     default_prob = 0.5;
     default_tolerance = 0.01;
     
-    % input parser
+    % parse
     p = inputParser;
     addRequired(p, 'Korrespondenzen');
     addOptional(p, 'epsilon', default_epsilon, @(x) isnumeric(x) && (x > 0) && (x < 1));
@@ -32,13 +26,7 @@ function [Korrespondenzen_robust] = F_ransac(Korrespondenzen, varargin)
     x2_pixel = [Korrespondenzen(3:4,:); ones(1, size(Korrespondenzen,2))];
     
     %% RANSAC Algorithmus Vorbereitung
-    % Vorinitialisierte Variablen:
-    % k                     Anzahl der benötigten Punkte
-    % s                     Iterationszahl
-    % largest_set_size      Größe des bisher größten Consensus-Sets
-    % largest_set_dist      Sampson-Distanz des bisher größten Consensus-Sets
-    % largest_set_F         Fundamentalmatrix des bisher größten Consensus-Sets
-    k = 8;                                      % Anzahl benötigter Punkte
+    k = 8;                                      % Anzahl bentigter Punkte
     s = log(1-prob)/log(1-(1-epsilon)^k);          % Iterationszahl
     largest_set_size = 0;
     largest_set_dist = Inf;
