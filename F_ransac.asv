@@ -11,19 +11,19 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
     
     % parse
     p = inputParser;
-    addRequired(p, 'correspondences');
+    addRequired(p, 'Korrespondenzen');
     addOptional(p, 'epsilon', default_epsilon, @(x) isnumeric(x) && (x > 0) && (x < 1));
     addOptional(p, 'prob', default_prob, @(x) isnumeric(x) && (x > 0) && (x < 1));
     addOptional(p, 'tolerance', default_tolerance, @(x) isnumeric(x));
     
-    parse(p,correspondences,varargin{:});
+    parse(p,Korrespondenzen,varargin{:});
     epsilon = p.Results.epsilon;
     prob = p.Results.prob;
     tolerance = p.Results.tolerance;
       
     % x1, x2 homogenisieren
-    x1_pixel = [correspondences(1:2,:); ones(1, size(correspondences,2))];
-    x2_pixel = [correspondences(3:4,:); ones(1, size(correspondences,2))];
+    x1_pixel = [Korrespondenzen(1:2,:); ones(1, size(Korrespondenzen,2))];
+    x2_pixel = [Korrespondenzen(3:4,:); ones(1, size(Korrespondenzen,2))];
     
     %% RANSAC Algorithmus Vorbereitung
     k = 8;                                          % number of needed correspondences
@@ -36,8 +36,8 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
     for i = 1:s
         
         % 1. estimate F
-        idx_rand = randperm(size(correspondences,2), k);
-        F = achtpunktalgorithmus(correspondences(:,idx_rand));
+        idx_rand = randperm(size(Korrespondenzen,2), k);
+        F = achtpunktalgorithmus(Korrespondenzen(:,idx_rand));
         % 2. Samspson distance for the whole dataset
         sd = sampson_dist(F, x1_pixel, x2_pixel);
         % 3. 4. 5. 6.
@@ -53,6 +53,6 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
         
     end
     % return
-    correspondences_robust = correspondences(:,largest_set);
+    correspondences_robust = Korrespondenzen(:,largest_set);
     
 end
