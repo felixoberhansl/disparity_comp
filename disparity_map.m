@@ -37,4 +37,16 @@ function [D, R, T] = disparity_map(scene_path)
     
     % estimate correct T and R
     [T, R, lambda, M1, M2] = rekonstruktion(T1, T2, R1, R2, correspondences, cam0);
+    
+    %% testing the matlab function for disparity map calculation
+    % compute disparity map 
+    disparityRange = [0 48];
+    disparityMap = disparityBM(img1gray,img2gray,'DisparityRange',disparityRange,'UniquenessThreshold',20);
+    
+    % plot
+    figure
+    imshow(disparityMap,disparityRange)
+    title('Disparity Map')
+    colormap jet
+    colorbar
 end
