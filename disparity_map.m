@@ -62,55 +62,31 @@ function [D, R, T] = disparity_map(scene_path)
     
     disparityMap = zeros(height,width);
     
-    disparityRange = ceil(doffs);                                    % defines the range where to search
     
-    blockSize = 11;                                                          % defines the size of the blocks
-    halfBlockSize = (blockSize-1)/2;
     
-    for m = 1: height
-        minRow = max(1, m-halfBlockSize);
-        maxRow = min(height, m+halfBlockSize);
+    
+    for w = 1:width
         
-        for n = 1: width
-            minCol = max(1, n-halfBlockSize);
-            maxCol = min(width, n+halfBlockSize);
+        for h = 1:height        
             
-            minDisp = 0;
-            maxDisp = min(disparityRange, width-maxCol);
+            % calculate epipolarline in match image for pixel in base image
+            % l2 ~ E * x1
             
-            rightBlock = img2gray(minRow:maxRow, minCol:maxCol);
             
-            numBlocks = maxDisp - minDisp + 1;
+            % extract a certain band around the epipolarline 
+        
+        
+        
             
-            blockDiffs = zeros(numBlocks,1);
             
-            for i = minDisp : maxDisp
-                leftBlock = img1gray(minRow:maxRow, minCol+i : maxCol+i);
-                idxBlock = i - minDisp + 1;
-                blockDiffs(idxBlock) = sum(sum(abs(rightBlock-leftBlock)));
-            end
-            
-            [~, idxSorted] = sort(blockDiffs);
-            
-            matchingBlock = idxSorted(1);
-            
-            disp = matchingBlock + minDisp - 1;
-            
-            % subpixel interpolation
-            if (matchingBlock == 1) || (matchingBlock == numBlocks)
-                disparityMap(m, n) = disp;
-            else
-                
-                C1 = blockDiffs(matchingBlock - 1);
-                C2 = blockDiffs(matchingBlock);
-                C3 = blockDiffs(matchingBlock + 1);
-                
-                % Adjust the disparity by some fraction.
-                % estimating the subpixel location of the true best match.
-                disparityMap(m, n) = disp - (0.5 * (C3 - C1) / (C1 - (2*C2) + C3));
-            end
         end
+            
+            
+            
+        
     end
+    
+    
     
     
     figure(1)
