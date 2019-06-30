@@ -69,12 +69,12 @@ function [D, R, T] = disparity_map(scene_path)
     
     % for test purposes choose significant pixel in image one
 
-    pixel1 = [500; 500];
+    pixel1 = [200; 200];
     
     % show pixel for test purposes
     
     figure 
-    imshow(img1)
+    imshow(uint8(img1gray))
     hold on
     
     plot(pixel1(1), pixel1(2),'+','Color','green')   
@@ -99,6 +99,23 @@ function [D, R, T] = disparity_map(scene_path)
     % calculate epipolarline in match image for pixel in base image
     % l2 ~ E * x1
     
+    x1_hom = [pixel1(1);pixel1(2);1]
+    
+    F = inv(cam0.') * E * inv(cam0)
+    
+    l2 = F * x1_hom
+    
+    epipolarline2 = [l2(1), l2(1)*100; l2(2), l2(2)*100]
+    
+    % draw epipolarline for test purposes
+    figure 
+    imshow(uint8(img2gray))
+    hold on
+    
+    plot(epipolarline2, 'g')  
+    
+    
+    
     
     % extract a certain band around the epipolarline
     
@@ -115,11 +132,11 @@ function [D, R, T] = disparity_map(scene_path)
     
     
     
-    figure(1)
-    imshow(disparityMap, []);
-    axis image;
-    colormap('jet')
-    colorbar
+    %figure(1)
+    %imshow(disparityMap, []);
+    %axis image;
+    %colormap('jet')
+    %colorbar
             
             
             
