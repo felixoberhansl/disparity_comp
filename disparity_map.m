@@ -63,28 +63,54 @@ function [D, R, T] = disparity_map(scene_path)
     disparityMap = zeros(height,width);
     
     
+    % params for CENSUS matching
+    census_size = 10;    
     
     
-    for w = 1:width
-        
-        for h = 1:height        
-            
-            % calculate epipolarline in match image for pixel in base image
-            % l2 ~ E * x1
-            
-            
-            % extract a certain band around the epipolarline 
-        
-        
-        
-            
-            
-        end
-            
-            
-            
-        
+    % for test purposes choose significant pixel in image one
+
+    pixel1 = [500; 500];
+    
+    % show pixel for test purposes
+    
+    figure 
+    imshow(img1)
+    hold on
+    
+    plot(pixel1(1), pixel1(2),'+','Color','green')   
+    
+    % calculate CENSUS for clipping in image 1
+    
+    census_frame = img1gray(pixel1(1)-census_size/2 : pixel1(1)+census_size/2, pixel1(2)-census_size/2 : pixel1(2)+census_size/2)
+    
+    for i = 1:size(census_frame,1)
+        for j = 1:size(census_frame, 2)
+            if(img1gray(pixel1(1), pixel1(2)) > census_frame(i,j))
+                census_frame(i,j) = 1;
+            else
+                census_frame(i,j) = 0;
+            end          
+        end       
     end
+    
+    census_frame
+    
+    
+    % calculate epipolarline in match image for pixel in base image
+    % l2 ~ E * x1
+    
+    
+    % extract a certain band around the epipolarline
+    
+    
+    % compare CENSUS of clipping 1 to every possible clipping in
+    % extracted band
+    
+    
+    %
+    
+        
+        
     
     
     
