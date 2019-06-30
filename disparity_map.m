@@ -114,6 +114,10 @@ function [D, R, T] = disparity_map(scene_path)
     
     plot(epipolarline2, 'g')  
     
+    % try with CV toolbox
+    
+    l2_cv = epipolarLine(F,pixel1.')
+    
     
     
     
