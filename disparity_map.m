@@ -23,7 +23,9 @@ function [D, R, T] = disparity_map(scene_path)
     features2 = harris_detektor(img2gray);
    
     % estimate correspondences
-    correspondences = punkt_korrespondenzen(img1gray, img2gray, features1, features2);
+    correspondences = punkt_korrespondenzen(img1gray, img2gray, features1, features2)
+    
+    plot_correspondences(correspondences, uint8(img1gray), uint8(img2gray))
     
     % find robust correspondences
     robustCorrespondences = F_ransac(correspondences);
