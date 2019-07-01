@@ -25,13 +25,19 @@ function [D, R, T] = disparity_map(scene_path)
     % estimate correspondences
     correspondences = punkt_korrespondenzen(img1gray, img2gray, features1, features2)
     
-    plot_correspondences(correspondences, uint8(img1gray), uint8(img2gray))
-    
     % find robust correspondences
     robustCorrespondences = F_ransac(correspondences);
     
+    plot_correspondences(robustCorrespondences, uint8(img1gray), uint8(img2gray))
+    
     % compute E
-    E = achtpunktalgorithmus(robustCorrespondences, cam0);                   % Kameramatrix 1 oder 2 ? bzw. sind die immer gleich??
+    E = achtpunktalgorithmus(robustCorrespondences, cam0)                   % Kameramatrix 1 oder 2 ? bzw. sind die immer gleich??
+    
+    % compute E with CV Toolbox
+    
+    params = cameraParameters('IntrinsicMatrix', cam0)
+    
+    E_cv = estimateEssentialMatrix(robustCorrespondences(1:2,:).', robustCorrespondences(3:4,:).', params)
 
     %% Euclidean movement
     % compute possible values for T and R
