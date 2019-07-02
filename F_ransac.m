@@ -1,25 +1,11 @@
 function [correspondences_robust] = F_ransac(correspondences, varargin)
     % This function implements the RANSAC-Algorithm to determine robust
     % correspondences
-    
-    %% Input parser
 
     % set default values
-    default_epsilon = 0.5;
-    default_prob = 0.5;
-    default_tolerance = 0.01;
-    
-    % parse
-    p = inputParser;
-    addRequired(p, 'correspondences');
-    addOptional(p, 'epsilon', default_epsilon, @(x) isnumeric(x) && (x > 0) && (x < 1));
-    addOptional(p, 'prob', default_prob, @(x) isnumeric(x) && (x > 0) && (x < 1));
-    addOptional(p, 'tolerance', default_tolerance, @(x) isnumeric(x));
-    
-    parse(p,correspondences,varargin{:});
-    epsilon = p.Results.epsilon;
-    prob = p.Results.prob;
-    tolerance = p.Results.tolerance;
+    epsilon = 0.5;
+    prob = 0.5;
+    tolerance = 0.01;
       
     % x1, x2 homogenisieren
     x1_pixel = [correspondences(1:2,:); ones(1, size(correspondences,2))];
@@ -52,6 +38,7 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
         end
         
     end
+    
     % return
     correspondences_robust = correspondences(:,largest_set);
     
