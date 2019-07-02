@@ -1,34 +1,17 @@
-function Korrespondenzen = punkt_korrespondenzen(I1,I2,Mpt1,Mpt2,varargin)
+function Korrespondenzen = punkt_korrespondenzen(I1,I2,Mpt1,Mpt2)
     % In dieser Funktion sollen die extrahierten Merkmalspunkte aus einer
     % Stereo-Aufnahme mittels NCC verglichen werden um Korrespondenzpunktpaare
     % zu ermitteln.
     
-    %% Input parser aus Aufgabe 2.1
     %% set default parameters
-    default_window_length = 25;
-    default_min_corr = 0.95;
-    default_do_plot = false;
-    
-    %% Input parser
-    p = inputParser;
-    addRequired(p, 'I1');
-    addRequired(p, 'I2');
-    addRequired(p, 'Mpt1');
-    addRequired(p, 'Mpt2');
-    addOptional(p, 'window_length', default_window_length, @(x) isnumeric(x) && (mod(x,2)==1) && (x > 1));
-    addOptional(p, 'min_corr', default_min_corr, @(x) isnumeric(x) && (0 < x) && (x < 1));
-    addOptional(p, 'do_plot', default_do_plot, @(x) islogical(x));
-    
-    parse(p,I1,I2,Mpt1,Mpt2,varargin{:});
-    window_length = p.Results.window_length;
-    min_corr = p.Results.min_corr;
-    do_plot = p.Results.do_plot;
-    
+    window_length = 25;
+    min_corr = 0.95;
+        
     %% convert images to double
-    I1 = double(p.Results.I1);
-    I2 = double(p.Results.I2);
+    I1 = double(I1);
+    I2 = double(I2);
     
-    %% Merkmalsvorbereitung aus Aufabe 2.2
+    %% Pre-Processing features
     % image 1
     Mpt1( : , Mpt1(1,:) < (window_length+1)/2) = [];                % left
     Mpt1( : , Mpt1(1,:) > size(I1,2)-(window_length-1)/2) = [];     % right
@@ -41,11 +24,11 @@ function Korrespondenzen = punkt_korrespondenzen(I1,I2,Mpt1,Mpt2,varargin)
     Mpt2( : , Mpt2(2,:) < (window_length+1)/2) = [];                % top
     Mpt2( : , Mpt2(2,:) > size(I2,1)-(window_length-1)/2) = [];     % bottom
         
-    % number of points
-    no_pts1 = size(Mpt1, 2);
-    no_pts2 = size(Mpt2, 2);
+%     % number of points
+%     no_pts1 = size(Mpt1, 2);
+%     no_pts2 = size(Mpt2, 2);
     
-    %% Normierung aus Aufgabe 2.3
+    %% Norm
     dist = (window_length-1)/2;
     Mat_feat_1 = zeros(window_length^2, size(Mpt1,2));
     Mat_feat_2 = zeros(window_length^2, size(Mpt2,2));    
@@ -66,7 +49,7 @@ function Korrespondenzen = punkt_korrespondenzen(I1,I2,Mpt1,Mpt2,varargin)
         Mat_feat_2(:,i) = (temp_window2-mean_temp_window2) ./ std_temp_window2;     % norm
     end
     
-    %% Normalized Cross Correlation aus Aufgabe 2.4
+    %% Normalized Cross Correlation
     N = window_length^2;
     NCC_matrix = zeros(size(Mat_feat_1,2), size(Mat_feat_2,2));
  
