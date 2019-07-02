@@ -6,10 +6,6 @@ function Korrespondenzen = punkt_korrespondenzen(I1,I2,Mpt1,Mpt2)
     %% set default parameters
     window_length = 25;
     min_corr = 0.95;
-        
-    %% convert images to double
-    I1 = double(I1);
-    I2 = double(I2);
     
     %% Pre-Processing features
     % image 1
