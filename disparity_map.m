@@ -3,6 +3,9 @@ function [D, R, T] = disparity_map(scene_path)
     % disparity map of the included stereo image pair. Also, the Euclidean
     % motion is returned as Rotation R and Translation T.
 
+    % add subfolders
+    addpath(genpath('d:\git\cv_challenge_33\')); 
+    
     % import data
     img1 = imread(fullfile(scene_path, 'im0.png'));
     img2 = imread(fullfile(scene_path, 'im1.png'));
@@ -51,6 +54,15 @@ function [D, R, T] = disparity_map(scene_path)
     % plane, so that there is only movement along the x-axis)
     
     % is this step neccessary, or do we only get such images?
+    
+    % perspective projection matrix, world origin at first camera 
+    ppm0 = cam0 * eye(3,4);
+    ppm1 = cam1 *[eye(3), T];
+    
+    [img1Rect, img2Rect] = rectifyImageE(img1, img2, ppm0, ppm1);
+    
+    img1RectGray = rgb2gray(img1Rect);
+    
     %----------------------------------------------------------------------
     
     
