@@ -7,8 +7,8 @@ function [hartley_correspondences] = hartley_preprocess(correspondences, img1, i
     hartley_correspondences = correspondences;
     
     % calculate new origins
-    origin1 = [size(img1,1), size(img1,2)]./2;
-    origin2 = [size(img2,1), size(img2,2)]./2;
+    origin1 = [size(img1,1); size(img1,2)]./2;
+    origin2 = [size(img2,1); size(img2,2)]./2;
     
     % translate all correspondences to new reference coordinate system
     hartley_correspondences(1:2,:) = hartley_correspondences(1:2,:) - repmat(origin1,1,size(correspondences,2));
