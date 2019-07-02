@@ -31,18 +31,21 @@ function [D, R, T] = disparity_map(scene_path)
     % find robust correspondences
     robustCorrespondences = F_ransac(correspondences);
     
+    % hartley pre-processing
+    hartley_correspondences = hartley_preprocess(robustCorrespondences, img1gray, img2gray);
+    
     % compute E
     E = achtpunktalgorithmus(robustCorrespondences, cam0);                   % Kameramatrix 1 oder 2 ? bzw. sind die immer gleich??
-
+    Ehart = achtpunktalgorithmus(hartley_correspondences, cam0);
     % compute E with CV Toolbox for comparison
     params0 = cameraParameters('IntrinsicMatrix', cam0);
     params1 = cameraParameters('IntrinsicMatrix', cam1);
-    E_cv0 = estimateEssentialMatrix(robustCorrespondences(1:2,:).', robustCorrespondences(3:4,:).', params0)
-    E_cv1 = estimateEssentialMatrix(robustCorrespondences(1:2,:).', robustCorrespondences(3:4,:).', params1)
-    E_cv01 = estimateEssentialMatrix(robustCorrespondences(1:2,:).', robustCorrespondences(3:4,:).', params0, params1)
+    E_cv0 = estimateEssentialMatrix(hartley_correspondences(1:2,:).', hartley_correspondences(3:4,:).', params0)
+    E_cv1 = estimateEssentialMatrix(hartley_correspondences(1:2,:).', hartley_correspondences(3:4,:).', params1)
+    E_cv01 = estimateEssentialMatrix(hartley_correspondences(1:2,:).', hartley_correspondences(3:4,:).', params0, params1)
 
     E
-        
+    Ehart
     %% Euclidean movement
     % compute possible values for T and R
     [T1,R1,T2,R2,U,V] = TR_aus_E(E);
