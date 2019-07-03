@@ -23,7 +23,7 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
         
         % 1. estimate F
         idx_rand = randperm(size(correspondences,2), k);
-        F = achtpunktalgorithmus(correspondences(:,idx_rand));
+        F = eightpointalgorithm(correspondences(:,idx_rand));
         % 2. Samspson distance for the whole dataset
         sd = sampson_dist(F, x1_pixel, x2_pixel);
         % 3. find all points with sd<tolerance and check if this set is
