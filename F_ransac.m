@@ -7,7 +7,7 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
     prob = 0.5;
     tolerance = 0.01;
       
-    % x1, x2 homogenisieren
+    % homogenize x1, x2
     x1_pixel = [correspondences(1:2,:); ones(1, size(correspondences,2))];
     x2_pixel = [correspondences(3:4,:); ones(1, size(correspondences,2))];
     

@@ -1,4 +1,4 @@
-function features = harris_detektor(input_image)
+function features = harris_detector(input_image)
     % This function implements the Harris-Detector to extract image
     % features
     %% set default values
