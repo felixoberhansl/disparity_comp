@@ -1,7 +1,6 @@
 function [Fx, Fy] = sobel_xy(input_image)
-    % In dieser Funktion soll das Sobel-Filter implementiert werden, welches
-    % ein Graustufenbild einliest und den Bildgradienten in x- sowie in
-    % y-Richtung zurueckgibt.
+    % This function implements the Sobel-Filter, which gets a gray-scaled
+    % image as an input and returns the image gradient in x- and y-direction
     Sobel_h=[1,0,-1;
              2,0,-2;
              1,0,-1];
