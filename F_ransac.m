@@ -11,14 +11,14 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
     x1_pixel = [correspondences(1:2,:); ones(1, size(correspondences,2))];
     x2_pixel = [correspondences(3:4,:); ones(1, size(correspondences,2))];
     
-    %% RANSAC Algorithmus Vorbereitung
+    %% RANSAC Algorithm Pre-Processing
     k = 8;                                          % number of needed correspondences
     s = log(1-prob)/log(1-(1-epsilon)^k);           % iterations
     largest_set_size = 0;
     largest_set_dist = Inf;
     largest_set_F = zeros(3,3);
     
-    %% RANSAC Algorithmus
+    %% RANSAC Algorithm
     for i = 1:s
         
         % 1. estimate F
@@ -26,7 +26,8 @@ function [correspondences_robust] = F_ransac(correspondences, varargin)
         F = achtpunktalgorithmus(correspondences(:,idx_rand));
         % 2. Samspson distance for the whole dataset
         sd = sampson_dist(F, x1_pixel, x2_pixel);
-        % 3. 4. 5. 6.
+        % 3. find all points with sd<tolerance and check if this set is
+        % "better" (in size/quality) than the set before
         idx_inlier = find(sd<tolerance);
         current_set_dist = sum(sd(idx_inlier));
         current_set_size = size(idx_inlier,2);
