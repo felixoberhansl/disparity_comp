@@ -1,8 +1,7 @@
 function features = harris_detektor(input_image)
-    % In dieser Funktion soll der Harris-Detektor implementiert werden, der
-    % Merkmalspunkte aus dem Bild extrahiert
-    %% Input Parser
-    % set default values
+    % This function implements the Harris-Detector to extract image
+    % features
+    %% set default values
     segment_length = 15;
     k = 0.05;
     tau = 10^6;
@@ -11,15 +10,15 @@ function features = harris_detektor(input_image)
     N = 5;
         
     %% Pre-Processing of the image
-    % Pruefe ob es sich um ein Grauwertbild handelt
+    % check if image is gray-scale
     if size(input_image,3) ~= 1
         error('Image format has to be NxMx1');
     end
     % convert to double
     dInputImage = double(input_image);
-    % Approximation des Bildgradienten
+    % Approximate the image gradient
     [Fx, Fy] = sobel_xy(dInputImage);
-    % Gewichtung
+    % computing weight vector
     w1 = [1:segment_length/2 + 1];
     w2 = [int16(segment_length/2 - 1):-1:1];
     w = [w1, w2];
@@ -37,15 +36,15 @@ function features = harris_detektor(input_image)
     %disp(corners);
     
     %% Post-Processing features
-    % Nullrand
+    % add zeroes to the edges
     corners = [zeros(size(corners,1),min_dist), corners, zeros(size(corners,1),min_dist)];
     corners = [zeros(min_dist,size(corners,2)); corners; zeros(min_dist,size(corners,2))];
     
-    % sortieren
-    [~, sorted_index_mitNull] = sort(corners(:), 'descend');      % corners(:) -> Matrix zu vektor machen wegen sort
-    sorted_index = sorted_index_mitNull(1:size(find(corners)));   % 1 : Anzahl nicht-Nullen
+    % sort features
+    [~, sorted_index_withZeroNull] = sort(corners(:), 'descend');      % corners(:) -> stack matrix to vector
+    sorted_index = sorted_index_withZeroNull(1:size(find(corners)));   % 1 : number of non-zeros
     
-    %% Akkumulatorfeld aus Aufgabe 1.10
+    %% Akkumulator
     iAnzTilesHeight = ceil(size(input_image,1)/tile_size(1,1));       % Anzahl Tiles in x(Width) und y(Height) Richtung
     iAnzTilesWidth  = ceil(size(input_image,2)/tile_size(1,2));       % tile_size nicht geeignet gewählt! aufrunden?!
     AKKA = zeros(iAnzTilesHeight, iAnzTilesWidth);
@@ -55,39 +54,39 @@ function features = harris_detektor(input_image)
         features = zeros(2,size(sorted_index,1));
     end
     
-    %% Merkmalsbestimmung mit Mindestabstand und Maximalzahl pro Kachel
-    [row_sorted_index,col_sorted_index] = ind2sub(size(corners),sorted_index);  % rows and cols der sorted_index ausgeben
-    iAnzMerkmale = 0;                                                           
-    iAnzMerkmaleMax = size(features, 2);                                         % bedingt durch entweder maximale Anzahl an Merkmalen oder tiles * N
+    %% extract features with the constraints: min_dist and max number of features for each tile
+    [row_sorted_index,col_sorted_index] = ind2sub(size(corners),sorted_index);  % extract rows and cols of the sorted_index
+    iNumFeatures = 0;                                                           
+    iNumFeaturesMax = size(features, 2);                                         % depends on max number of features or tiles*N
     for i=1:size(sorted_index)
         row_AKKA = ceil((row_sorted_index(i)-min_dist)/tile_size(1));        
         col_AKKA = ceil((col_sorted_index(i)-min_dist)/tile_size(2));        
-        if AKKA(row_AKKA,col_AKKA) < N                                       % max Anzahl an Merkmalen in dieser Kachel schon erreicht?
-            if corners(row_sorted_index(i), col_sorted_index(i)) ~= 0        % min_dist eingehalten?!!
+        if AKKA(row_AKKA,col_AKKA) < N                                       % check if max number of features in this tile is reached
+            if corners(row_sorted_index(i), col_sorted_index(i)) ~= 0        % check if feature is outside min_dist
                 AKKA(row_AKKA,col_AKKA) = AKKA(row_AKKA,col_AKKA) + 1;
-                % Teil der matrix auswählen die mit cake multipliziert werden sollen, vom punkt min_dist nach links und oben bis vom punkt min_dist nach rechts und unten
+                % extrat the part of the image which should be multplied
+                % with the "cake"(min_dist to every direction)
                 corners(row_sorted_index(i) - min_dist : row_sorted_index(i) + min_dist, col_sorted_index(i) - min_dist : col_sorted_index(i) + min_dist) = corners(row_sorted_index(i) - min_dist : row_sorted_index(i) + min_dist, col_sorted_index(i) - min_dist : col_sorted_index(i) + min_dist) .* cake(min_dist);
-                iAnzMerkmale = iAnzMerkmale + 1;
-                features(:,iAnzMerkmale) = [col_sorted_index(i)-min_dist; row_sorted_index(i)-min_dist];
-                if iAnzMerkmale == iAnzMerkmaleMax
+                iNumFeatures = iNumFeatures + 1;
+                features(:,iNumFeatures) = [col_sorted_index(i)-min_dist; row_sorted_index(i)-min_dist];
+                if iNumFeatures == iNumFeaturesMax
                    disp("max erreicht")
-                   break                                                     % wenn maximale Anzahl an Merkmalen (alle Merkmale verarbeitet oder tiles*N) erreicht -> break 
+                   break                                                     % break, if max number of tiles is reached
                 end
             end
         end
     end
-    features(:, all(features == 0) ) = [];                                    % hinteren Nullen entfernen
-    
+    features(:, all(features == 0) ) = [];                                   % delete zeros
 end
 
 %-------------------------functions----------------------------------------
 %--------------------------------------------------------------------------
 
 function Cake = cake(min_dist)
-    % Die Funktion cake erstellt eine "Kuchenmatrix", die eine kreisfoermige
-    % Anordnung von Nullen beinhaltet und den Rest der Matrix mit Einsen
-    % auffuellt. Damit koennen, ausgehend vom staerksten Merkmal, andere Punkte
-    % unterdrueckt werden, die den Mindestabstand hierzu nicht einhalten. 
+    % This funciton creates a "cake-matrix" which contains circle of zeros
+    % and fills the other parts of the matrix with ones. Can be used to
+    % suppress features within the min distance.
+    
     Cake = true(2*min_dist+1,2*min_dist+1);
 
     for i = 1:size(Cake,1)
