@@ -22,11 +22,11 @@ function [D, R, T] = disparity_map(scene_path)
     img2gray = double(rgb2gray(img2));
     
     % compute harris-features
-    features1 = harris_detektor(img1gray);
-    features2 = harris_detektor(img2gray);
+    features1 = harris_detector(img1gray);
+    features2 = harris_detector(img2gray);
    
     % estimate correspondences
-    correspondences = punkt_korrespondenzen(img1gray, img2gray, features1, features2);
+    correspondences = point_correspondences(img1gray, img2gray, features1, features2);
     
     % find robust correspondences
     robustCorrespondences = F_ransac(correspondences);
@@ -35,9 +35,14 @@ function [D, R, T] = disparity_map(scene_path)
     hartley_correspondences = hartley_preprocess(robustCorrespondences, img1gray, img2gray);
     
     % compute E
-    E = achtpunktalgorithmus(robustCorrespondences, cam0);                   % Kameramatrix 1 oder 2 ? bzw. sind die immer gleich??
-    Ehart = achtpunktalgorithmus(hartley_correspondences, cam0);
-    % compute E with CV Toolbox for comparison
+    E = eightpointalgorithm(robustCorrespondences, cam0);                   % Kameramatrix 1 oder 2 ? bzw. sind die immer gleich??
+    Ehart = eightpointalgorithm(hartley_correspondences, cam0);
+    
+    %% compute E with CV Toolbox for comparison
+    features1_cv = (detectHarrisFeatures(img1gray));
+    features1_cv= features1_cv.selectStrongest(size(features1,2))
+    features2_cv = detectHarrisFeatures(img2gray);
+    features2_cv= features2_cv.selectStrongest(size(features2,2))
     params0 = cameraParameters('IntrinsicMatrix', cam0);
     params1 = cameraParameters('IntrinsicMatrix', cam1);
     E_cv0 = estimateEssentialMatrix(hartley_correspondences(1:2,:).', hartley_correspondences(3:4,:).', params0)
@@ -48,10 +53,10 @@ function [D, R, T] = disparity_map(scene_path)
     Ehart
     %% Euclidean movement
     % compute possible values for T and R
-    [T1,R1,T2,R2,U,V] = TR_aus_E(E);
+    [T1,R1,T2,R2,U,V] = TR_from_E(E);
     
     % estimate correct T and R
-    [T, R, lambda, M1, M2] = rekonstruktion(T1, T2, R1, R2, correspondences, cam0);
+    [T, R, lambda, M1, M2] = rekonstruction(T1, T2, R1, R2, correspondences, cam0);
     
     % transform T into [m]
     % -> use cx1 - cx0 to get the distance between the cameras along the
@@ -66,6 +71,7 @@ function [D, R, T] = disparity_map(scene_path)
     % plane, so that there is only movement along the x-axis)
     
     % is this step neccessary, or do we only get such images?
+    % -> not necessary, only translation in x!!!!!!
     
     % perspective projection matrix, world origin at first camera 
     ppm0 = cam0 * eye(3,4);
@@ -136,7 +142,7 @@ function [D, R, T] = disparity_map(scene_path)
         end
     end
     
-    
+    clf
     figure(1)
     imshow(disparityMap, []);
     axis image;
