@@ -7,21 +7,14 @@ function [hartley_correspondences] = hartley_preprocess(correspondences, img1, i
     hartley_correspondences = correspondences;
     
     % calculate new origins
-    origin1 = [size(img1,1), size(img1,2)];
-    origin2 = [size(img2,1), size(img2,2)];
+    origin1 = [round(size(img1,1)/2); round(size(img1,2)/2)];
+    origin2 = [round(size(img2,1)/2); round(size(img2,2)/2)];
     
     % translate all correspondences to new reference coordinate system
-    for i = 1:size(hartley_correspondences, 2)
-        
-        % new column (x)
-        hartley_correspondences(1,i) = hartley_correspondences(1,i) - origin1(1);
-        hartley_correspondences(3,i) = hartley_correspondences(3,i) - origin2(1);        
-        
-        % new row (y)
-        hartley_correspondences(2,i) = hartley_correspondences(2,i) - origin1(2);
-        hartley_correspondences(4,i) = hartley_correspondences(4,i) - origin2(2);           
-        
-    end
+
+    hartley_correspondences(1:2,:) = hartley_correspondences(1:2,:) - repmat(origin1,1,size(correspondences,2));
+    hartley_correspondences(3:4,:) = hartley_correspondences(3:4,:) - repmat(origin2,1,size(correspondences,2));
+
     
     % calculate isotropic scaling factors such that the avg correspondence 
     % point has a distance of sqrt(2) to centroid
