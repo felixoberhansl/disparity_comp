@@ -4,9 +4,9 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
 
 
     width = size(img1,2);
-    height = size(img1,1);
+    heigth = size(img1,1);
     
-    disparity_map = zeros(height, width);
+    disparity_map = zeros(heigth, width);
     
     censusframe_leftdown = zeros(2,1);
     censusframe_rightup = zeros(2,1);
@@ -14,13 +14,16 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
     matchframe_rightup = zeros(2,1);
 
     for w = 1+censusframe_size:width-censusframe_size
-        for h = 1+censusframe_size: height-censusframe_size
+        
+        disp("Row: " + num2str(w) + " of " + num2str(width))
+        
+        for h = 1+censusframe_size: heigth-censusframe_size
             
             % extract census frame from image 1
             
             % calculate left bottom and right top coordinate of frame
-            censusframe_leftdown = [max(1,w - censusframe_size/2); min(height, h + censusframe_size/2)];
-            censusframe_rightup = [min(width, w + censusframe_size/2); max(1, h - censusframe_size/2)];
+            censusframe_leftdown = uint16([max(1,w - censusframe_size/2); min(heigth, h + censusframe_size/2)]);
+            censusframe_rightup = uint16([min(width, w + censusframe_size/2); max(1, h - censusframe_size/2)]);
             
             % extract frame
             censusframe = img1(censusframe_rightup(2):censusframe_leftdown(2), censusframe_leftdown(1):censusframe_rightup(1));
@@ -33,7 +36,7 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
             
             % extract region to search for matching    
             h_min = max(1, h-tolerance);
-            h_max = min(height, h+tolerance);
+            h_max = min(heigth, h+tolerance);
             
             
             % search region of interest for identical censusframe
@@ -45,8 +48,9 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
                 for roi_h = h_min:h_max
                     
                     % calculate left bottom and right top coordinate of frame
-                    matchframe_leftdown = [max(1,roi_w - censusframe_size/2); min(height, roi_h + censusframe_size/2)];
-                    matchframe_rightup = [min(width, roi_w + censusframe_size/2); max(1, roi_h - censusframe_size/2)];
+                    matchframe_leftdown = uint16([max(1,roi_w - censusframe_size/2); min(heigth, roi_h + censusframe_size/2)]);
+                    matchframe_rightup = uint16([min(width, roi_w + censusframe_size/2); max(1, roi_h - censusframe_size/2)]);
+                    
                     
                     % extract frame
                     matchframe = img2(matchframe_rightup(2):matchframe_leftdown(2), matchframe_leftdown(1):matchframe_rightup(1));
