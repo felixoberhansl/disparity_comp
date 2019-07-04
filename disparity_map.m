@@ -15,143 +15,162 @@ function [D, R, T] = disparity_map(scene_path)
     
     %% Essentielle Matrix
     % preprocessing images
-    img1gray = double(rgb2gray(img1));
-    img2gray = double(rgb2gray(img2));
-    
-    % compute harris-features
-    features1 = harris_detektor(img1gray);
-    features2 = harris_detektor(img2gray);
-   
-    % estimate correspondences
-    correspondences = punkt_korrespondenzen(img1gray, img2gray, features1, features2)
-    
-    % find robust correspondences
-    robustCorrespondences = F_ransac(correspondences);
-    
-    plot_correspondences(robustCorrespondences, uint8(img1gray), uint8(img2gray))
-    
-    hartley_correspondences = hartley_preprocess(robustCorrespondences, uint8(img1gray), uint8(img2gray))
-    
-    % compute E
-    F = achtpunktalgorithmus(hartley_correspondences)                   % Kameramatrix 1 oder 2 ? bzw. sind die immer gleich??
-    
-    % compute E with CV Toolbox
-    
-    params = cameraParameters('IntrinsicMatrix', cam0);
-    
-    F_cv = estimateFundamentalMatrix(hartley_correspondences(1:2,:).', hartley_correspondences(3:4,:).')
-
-    %% Euclidean movement
-    % compute possible values for T and R
-    [T1,R1,T2,R2,U,V] = TR_aus_E(E);
-    
-    % estimate correct T and R
-    [T, R, lambda, M1, M2] = rekonstruktion(T1, T2, R1, R2, correspondences, cam0);
-    
-    % transform T into [m]
-    % -> use cx1 - cx0 to get the distance between the cameras along the
-    % x-axis???????
-    
-    % ---------------------------------------------------------------------
-    % ---------------------------------------------------------------------
+   img1gray = double(rgb2gray(img1));
+   img2gray = double(rgb2gray(img2));
+%     
+%     % compute harris-features
+%     features1 = harris_detektor(img1gray);
+%     features2 = harris_detektor(img2gray);
+%    
+%     % estimate correspondences
+%     correspondences = punkt_korrespondenzen(img1gray, img2gray, features1, features2)
+%     
+%     % find robust correspondences
+%     robustCorrespondences = F_ransac(correspondences);
+%     
+%     % plot_correspondences(robustCorrespondences, uint8(img1gray), uint8(img2gray));
+%     
+%     hartley_correspondences = hartley_preprocess(robustCorrespondences, uint8(img1gray), uint8(img2gray));
+%     
+%     % compute E
+%     F = achtpunktalgorithmus(hartley_correspondences) ;                  % Kameramatrix 1 oder 2 ? bzw. sind die immer gleich??
+%     
+%     % compute E with CV Toolbox
+%     
+%     params = cameraParameters('IntrinsicMatrix', cam0);
+%     
+%     F_cv = estimateFundamentalMatrix(hartley_correspondences(1:2,:).', hartley_correspondences(3:4,:).')
+% 
+%     %% Euclidean movement
+%     % compute possible values for T and R
+%     [T1,R1,T2,R2,U,V] = TR_aus_E(E);
+%     
+%     % estimate correct T and R
+%     [T, R, lambda, M1, M2] = rekonstruktion(T1, T2, R1, R2, correspondences, cam0);
+%     
+%     % transform T into [m]
+%     % -> use cx1 - cx0 to get the distance between the cameras along the
+%     % x-axis???????
+%     
+%     % ---------------------------------------------------------------------
+%     % ---------------------------------------------------------------------
     
     %% Disparity Map
-    % rectifying images 
-    % (in order to have two images projected on a virtual
-    % plane, so that there is only movement along the x-axis)
-    
-    % is this step neccessary, or do we only get such images?
-    %----------------------------------------------------------------------
-    
-    
-    % first try on basic block matching approach
-    % -> basically takes a block of pixels and tries to find the best
-    % matching block in the other image (only along the same row, because 
-    % of the rectified images), distance between these matching blocks is
-    % then the disparity
-    
-    disparityMap = zeros(height,width);
-    
-    
-    % params for CENSUS matching
-    census_size = 10;    
-    
-    
-    % for test purposes choose significant pixel in image one
-
-    pixel1 = [200; 200];
-    
-    % show pixel for test purposes
-    
-    figure 
-    imshow(uint8(img1gray))
-    hold on
-    
-    plot(pixel1(1), pixel1(2),'+','Color','green')   
-    
-    % calculate CENSUS for clipping in image 1
-    
-    census_frame = img1gray(pixel1(1)-census_size/2 : pixel1(1)+census_size/2, pixel1(2)-census_size/2 : pixel1(2)+census_size/2)
-    
-    for i = 1:size(census_frame,1)
-        for j = 1:size(census_frame, 2)
-            if(img1gray(pixel1(1), pixel1(2)) > census_frame(i,j))
-                census_frame(i,j) = 1;
-            else
-                census_frame(i,j) = 0;
-            end          
-        end       
-    end
-    
-    census_frame
-    
-    
-    % calculate epipolarline in match image for pixel in base image
-    % l2 ~ E * x1
-    
-    x1_hom = [pixel1(1);pixel1(2);1]
-    
-    F = inv(cam0.') * E * inv(cam0)
-    
-    l2 = F * x1_hom
-    
-    epipolarline2 = [l2(1), l2(1)*100; l2(2), l2(2)*100]
-    
-    % draw epipolarline for test purposes
-    figure 
-    imshow(uint8(img2gray))
-    hold on
-    
-    plot(epipolarline2, 'g')  
-    
-    % try with CV toolbox
-    
-    l2_cv = epipolarLine(F,pixel1.')
-    
-    
-    
-    
-    % extract a certain band around the epipolarline
-    
-    
-    % compare CENSUS of clipping 1 to every possible clipping in
-    % extracted band
-    
-    
-    %
+%     % rectifying images 
+%     % (in order to have two images projected on a virtual
+%     % plane, so that there is only movement along the x-axis)
+%     
+%     % is this step neccessary, or do we only get such images?
+%     %----------------------------------------------------------------------
+%     
+%     
+%     % first try on basic block matching approach
+%     % -> basically takes a block of pixels and tries to find the best
+%     % matching block in the other image (only along the same row, because 
+%     % of the rectified images), distance between these matching blocks is
+%     % then the disparity
+%     
+%     % extract translatation from camera parameters
+%     T = [baseline; 0; 0];
+%     
+%     % create rotation matrix with rotation angle 0
+%     R = [1 0 0; 
+%          0 1 0;
+%          0 0 1];
+%      
+%      % calculate essential matrix
+%      
+%      E = hat(T) * R;    
+%     
+%     
+%     disparityMap = zeros(height,width);
+%     
+%     
+%     % params for CENSUS matching
+%     census_size = 10;    
+%     
+%     
+%     % for test purposes choose significant pixel in image one
+% 
+%     pixel1 = [200; 200];
+%     
+%     % show pixel for test purposes
+%     
+%     figure 
+%     imshow(uint8(img1gray))
+%     subplot(1,2,1);
+%     hold on
+%     
+%     plot(pixel1(1), pixel1(2),'+','Color','green')   
+%     
+%     % calculate CENSUS for clipping in image 1
+%     
+%     census_frame = img1gray(pixel1(1)-census_size/2 : pixel1(1)+census_size/2, pixel1(2)-census_size/2 : pixel1(2)+census_size/2)
+%     
+%     for i = 1:size(census_frame,1)
+%         for j = 1:size(census_frame, 2)
+%             if(img1gray(pixel1(1), pixel1(2)) > census_frame(i,j))
+%                 census_frame(i,j) = 1;
+%             else
+%                 census_frame(i,j) = 0;
+%             end          
+%         end       
+%     end
+%     
+%     census_frame
+%     
+%     
+%     % calculate epipolarline in match image for pixel in base image
+%     % l2 ~ E * x1
+%     
+%     x1_hom = [pixel1(1);pixel1(2);1]
+%     
+%     F = inv(cam0.') * E * inv(cam0)
+%     
+%     l2 = E * x1_hom
+%     
+%     epipolarline2 = [l2(1), l2(1)*100; l2(2), l2(2)*100]
+%     
+%     % draw epipolarline for test purposes
+%     subplot(1,2,2)
+%     hold on
+%     imshow(uint8(img2gray))
+%     
+%     plot(epipolarline2, 'g')  
+%     
+%     % try with CV toolbox
+%     
+%     l2_cv = epipolarLine(F,pixel1.')
+%     
+%     
+%     
+%     
+%     % extract a certain band around the epipolarline
+%     
+%     
+%     % compare CENSUS of clipping 1 to every possible clipping in
+%     % extracted band
+%     
+%     
+%     %
     
         
         
+    disparityMap = census_matching(uint8(img1gray), uint8(img2gray), 4, 21); 
     
     
     
     
-    %figure(1)
-    %imshow(disparityMap, []);
-    %axis image;
-    %colormap('jet')
-    %colorbar
-            
+    
+    figure(1)
+    imshow(disparityMap, []);
+    axis image;
+    colormap('jet')
+    colorbar
+           
+    D = 0;
+    R = 0;
+    T = 0;
             
             
 %     %% testing the matlab function for disparity map calculation
