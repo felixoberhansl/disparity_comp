@@ -26,7 +26,7 @@ R = [1 0 0; 0 1 0; 0 0 1];
 E = hat(T)*R;
 
 %% Belief Propagation test
-%outimg=beliefPropStereo(img1,img2,50,10,10)
+%outimg=beliefPropStereo(img1,img2,25,10,10)
 
 %     %% Essentielle Matrix
 %
@@ -116,7 +116,7 @@ E = hat(T)*R;
 
 disparityMap = zeros(height,width);
 
-disparityRange = round(baseline);%30;%round(width/5);%ceil(doffs);                                    % defines the range where to search
+disparityRange = 50;%round(baseline);%30;%round(width/5);%ceil(doffs);                                    % defines the range where to search
 
 blockSize = 11;                                                          % defines the size of the blocks
 halfBlockSize = (blockSize-1)/2;
@@ -126,6 +126,8 @@ disparityPenalty = 0.5;                             % penalty for mismatching ne
 disparityCost = finf * ones(width, 2 * disparityRange + 1, 'single');      % initialize disparity cos matrix with high values
 % one row for each pixel in de current row of the image, colums for the disparities of the next pixels
 for row = 1: height
+    % reinitialize disparityCost
+    disparityCost(:) = finf;
     % progress visualization
     if (mod(row, 10) == 0)
         fprintf(' Image row %d / %d (%.0f%%)\n', row, height, (row / height) * 100);
@@ -177,7 +179,7 @@ for row = 1: height
     cp = disparityCost(end,:);          % last row of disparityCost -> coresponds to mthe most right pixel in the image
     % going from the right to the left
     for j = width-1:-1:1
-        cfinf = (width-j+1) * finf;          % false infinity for this level, decreses when im more to the left of the image
+        cfinf = (width-j+1) * finf;          % false infinity for this level, increases, the more left you are in the image
         
         mat = [cfinf cfinf cp(1:end-4)+3*disparityPenalty;
             cfinf cp(1:end-3)+2*disparityPenalty;
@@ -218,8 +220,33 @@ imshow(disparityMap, []);
 axis image;
 colormap('jet')
 colorbar
+%----------------------------------------------------------------------
+%----------------------------------------------------------------------
+%% Post-Processing
+% Mean-Shift-Algorithm
+bandwith = 0.1;                     
+test1=rgb2gray(Ms(img1, bandwith));
+test2=rgb2gray(Ms2(img1, bandwith));
+segs = unique(test2);
+thr = 2;
+for i = 1:size(segs,1)
+   m = mode(disparityMap(test2==segs(i)));
+   indizes = find(test2==segs(i));
+   for j = 1:size(indizes,1)
+       k = indizes(j);
+       if (disparityMap(k) < m-thr) || (disparityMap(k) > m+thr)
+           disparityMap(k) = 0;
+       else
+           disparityMap(k) = m;
+       end
+   end
+end
 
-
+figure
+imshow(disparityMap, []);
+axis image;
+colormap('jet')
+colorbar
 %----------------------------------------------------------------------
 %----------------------------------------------------------------------
 
