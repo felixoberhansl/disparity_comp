@@ -40,8 +40,10 @@ h = zeros(WS,WS,'double'); h(1,1) = 1; h(1,WS) = -1; h(WS,1) = -1; h(WS,WS) = 1;
 
 % Calculate pixel cost
 for Dc = 1 : D
-   maxL = widthL + 1 - Dc; 
-   pcost(:, Dc : widthL, Dc ) = imabsdiff( imgright( :, 1 : maxL), imgleft( :, Dc : widthL) );
+   maxL = widthL + 1 - Dc;
+   % probably not the fastest solution..?
+   pcost(:, Dc : widthL, Dc ) = uint8(abs(int16(imgright( :, 1 : maxL)) - int16(imgleft( :, Dc : widthL))));
+   %pcost(:, Dc : widthL, Dc ) = imabsdiff( imgright( :, 1 : maxL), imgleft( :, Dc : widthL) );
 end
 
 % Calculate integral cost
@@ -49,7 +51,22 @@ icost = single(pcost);
 icost = cumsum( cumsum( icost ), 2 );
 
 % Calculate window cost
-wcost = imfilter(icost,h,'same','symmetric');
+for i = 1:size(icost,3)
+    % zero matrix -> add edges -> put icost in the middle -> fill up edges
+    icost_padded = zeros(size(icost,1)+2*WS2, size(icost,2)+2*WS2, size(icost,3));
+    icost_padded(WS2+1:end-WS2,WS2+1:end-WS2) = icost(:,:,i);
+    
+    %up
+    icost_padded(1:WS2,WS2+1:end-WS2) = icost_padded(2*WS2+1:-1:WS2+1, WS2+1:end-WS2);
+    %down
+    icost_padded(end-WS2:end,WS2+1:end-WS2) = icost_padded(end-WS2-1:end-2*WS2, WS2+1:end-WS2);
+    %left
+    
+    %right
+    
+    filter2(h, icost_padded(:,:,i), 'valid')
+end
+%wcost = imfilter(icost,h,'same','symmetric');
 
 % Search disparity value
 [ dcost(:,D+WS2:widthL), dmap(:,D+WS2:widthL)] = min( wcost(:,D+WS2:widthL,:),[], 3 );
