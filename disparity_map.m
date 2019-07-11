@@ -156,7 +156,7 @@ function [D, R, T] = disparity_map(scene_path)
     
         
         
-    disparityMap = census_matching(uint8(img1gray), uint8(img2gray), 3, 15); 
+    disparityMap = census_matching(uint8(img1gray), uint8(img2gray), 3, 200, 11); 
     
     
     

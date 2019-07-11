@@ -1,4 +1,4 @@
-function disparity_map = census_matching(img1, img2, tolerance, censusframe_size)
+function disparity_map = census_matching(img1, img2, tolerance_h, tolerance_w, censusframe_size)
     % This function maps pixels of stereo images using corresponding
     % geometry and census filtering
 
@@ -15,7 +15,7 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
 
     for w = 1+censusframe_size:width-censusframe_size
         
-        disp("Row: " + num2str(w) + " of " + num2str(width))
+        disp("Column: " + num2str(w) + " of " + num2str(width))
         
         for h = 1+censusframe_size: heigth-censusframe_size
             
@@ -35,8 +35,8 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
             
             
             % extract region to search for matching    
-            h_min = max(1, h-tolerance);
-            h_max = min(heigth, h+tolerance);
+            h_min = max(1, h-tolerance_h);
+            h_max = min(heigth, h+tolerance_h);
             
             
             % search region of interest for identical censusframe
@@ -44,7 +44,7 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
             best_match_val = inf;
             
             
-            for roi_w = w:width-censusframe_size
+            for roi_w = w:min(width-censusframe_size, w + tolerance_w)
                 for roi_h = h_min:h_max
                     
                     % calculate left bottom and right top coordinate of frame
@@ -63,7 +63,7 @@ function disparity_map = census_matching(img1, img2, tolerance, censusframe_size
                     
                     % save pixel with best CENSUS matching
                     current_match_val = sum(sum(diff));
-                    if current_match_val < best_match_val
+                    if current_match_val <= best_match_val
                         
                         best_match_val = current_match_val;
                         best_match_pixel = [roi_h; roi_w];
