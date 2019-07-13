@@ -1,7 +1,7 @@
 %load('rectificated.mat', 'JL');
 %load('rectificated.mat', 'JR');
 clear
-addpath(genpath('d:\git\cv_challenge_33\'));
+addpath(genpath('../'));
 
 JL=imread('../data/motorcycle/im0.png');
 JR=imread('../data/motorcycle/im1.png');
