@@ -67,7 +67,7 @@ for i = 1:size(icost,3)
     %filtering
     wcost(:,:,i) = filter2(h, icost_padded(:,:,i), 'valid');
 end
-%wcost = imfilter(icost,h,'same','symmetric');
+% wcost = imfilter(icost,h,'same','symmetric');
 
 % Search disparity value
 [ dcost(:,D+WS2:widthL), dmap(:,D+WS2:widthL)] = min( wcost(:,D+WS2:widthL,:),[], 3 );
