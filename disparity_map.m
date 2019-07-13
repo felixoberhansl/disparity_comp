@@ -4,7 +4,7 @@ function [D, R, T] = disparity_map(scene_path)
 % motion is returned as Rotation R and Translation T.
 
 % add subfolders
-addpath(genpath('d:\git\cv_challenge_33\'));
+addpath(genpath('..\'));
 
 % import data
 img1 = imread(fullfile(scene_path, 'im0.png'));

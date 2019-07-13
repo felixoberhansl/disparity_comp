@@ -1,8 +1,8 @@
 clear
 addpath(genpath('../'));
 
-JL=imread('../data/motorcycle/im0.png');
-JR=imread('../data/motorcycle/im1.png');
+JL=imread('../data/sword/im0.png');
+JR=imread('../data/sword/im1.png');
 window_size=0.01;
 max_disp_factor=0.3;
 
@@ -12,25 +12,20 @@ max_disp_factor=0.3;
 figure
 imshow(uint8(disp_left))
 colormap('jet')
-colorbar
-% figure
-% imshow(uint8(disp_right))
-% colormap('jet')
-% colorbar
-
+figure
+imshow(uint8(disp_right))
+colormap('jet')
 
 %% Post-Processing
-% disparityMap = disp_left;
 % Mean-Shift-Algorithm
-% bandwith = 0.1;                     
-% test1=rgb2gray(Ms(JL, bandwith));
-% [seg2, ~] = Ms2(JL, bandwith);
-% seg2gray = rgb2gray(seg2);
-% segs = unique(seg2gray);
-% thr = 2;
+bandwith = 0.2;                     
+%test1=rgb2gray(Ms(JL, bandwith));
+test2 = rgb2gray(Ms2(JL, bandwith));
+segs = unique(test2);
+thr = 2;
 % for i = 1:size(segs,1)
-%    m = mode(disparityMap(seg2gray==segs(i)));
-%    indizes = find(seg2gray==segs(i));
+%    m = mode(disparityMap(test2==segs(i)));
+%    indizes = find(test2==segs(i));
 %    for j = 1:size(indizes,1)
 %        k = indizes(j);
 %        if (disparityMap(k) < m-thr) || (disparityMap(k) > m+thr)

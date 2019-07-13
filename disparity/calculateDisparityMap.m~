@@ -51,49 +51,47 @@ disp_right=fliplr(disp_right);
 
 %check for bad vals
 disp_left(disp_left>=max_disp)=max_disp;
-% disp_left(disp_left<=-max_disp)=-max_disp;
+%disp_left(disp_left<=-max_disp)=-max_disp;
 disp_right(disp_right>=max_disp)=max_disp;
-% disp_right(disp_right<=-max_disp)=-max_disp;
+%disp_right(disp_right<=-max_disp)=-max_disp;
 
 % if(median_filter~=0)
 %     disp_left=medFilter(disp_left,median_filter);
 %     disp_right=medFilter(disp_right,median_filter);
 % end
 
-%size back to original if needed
-if(size(IL,1)>max_image_size ||size(IL,2)>max_image_size)
-    
-    disp_left=imresize(disp_left,[size(IL,1),size(IL,2)+offset]);
-    disp_right=imresize(disp_right,[size(IR,1),size(IR,2)+offset]);
-    disp_left=disp_left*(1/size_factor);
-    disp_right=disp_right*(1/size_factor);
-    disp_left=int16(disp_left);
-    disp_right=int16(disp_right);
-end
+% %size back to original if needed
+% if(size(IL,1)>max_image_size ||size(IL,2)>max_image_size)
+%     
+%     disp_left=imresize(disp_left,[size(IL,1),size(IL,2)+offset]);
+%     disp_right=imresize(disp_right,[size(IR,1),size(IR,2)+offset]);
+%     disp_left=disp_left*(1/size_factor);
+%     disp_right=disp_right*(1/size_factor);
+%     disp_left=int16(disp_left);
+%     disp_right=int16(disp_right);
+% end
 %subtract padding
 disp_left=disp_left(:,(offset+1):end,:);
 disp_right=disp_right(:,1:size(IL,2),:);
-disp_left=disp_left-offset;
-disp_right=disp_right-offset;
+disp_left=disp_left.;
+disp_right=disp_right;
 
 disp_left(rgb2gray(IL)==0)=0;
 disp_right(rgb2gray(IR)==0)=0;
 
-
-
-%outlier compensation
-if(outlier_compensation)
-    disp_l_fill=imgaussfilt(disp_left,20);
-    disp_r_fill=imgaussfilt(disp_right,20);
-    a=quant(disp_left,0.05);
-    b=quant(disp_left,0.95);
-    disp_left(disp_left<a)=disp_l_fill(disp_left<a);
-    disp_left(disp_left>b)=disp_l_fill(disp_left>b);
-    a=quant(disp_right,0.05);
-    b=quant(disp_right,0.95);
-    disp_right(disp_right<a)=disp_r_fill(disp_right<a);
-    disp_right(disp_right>b)=disp_r_fill(disp_right>b);
-end
+% %outlier compensation
+% if(outlier_compensation)
+%     disp_l_fill=imgaussfilt(disp_left,20);
+%     disp_r_fill=imgaussfilt(disp_right,20);
+%     a=quant(disp_left,0.05);
+%     b=quant(disp_left,0.95);
+%     disp_left(disp_left<a)=disp_l_fill(disp_left<a);
+%     disp_left(disp_left>b)=disp_l_fill(disp_left>b);
+%     a=quant(disp_right,0.05);
+%     b=quant(disp_right,0.95);
+%     disp_right(disp_right<a)=disp_r_fill(disp_right<a);
+%     disp_right(disp_right>b)=disp_r_fill(disp_right>b);
+% end
 
 % 0...255
 

@@ -1,5 +1,5 @@
-% This code implemented a comparison between “k-means” “mean-shift” and
-% “normalized-cut” segmentation
+% This code implemented a comparison between ï¿½k-meansï¿½ ï¿½mean-shiftï¿½ and
+% ï¿½normalized-cutï¿½ segmentation
 
 % Teste methods are:
 % Kmeans segmentation using (color) only
@@ -9,10 +9,10 @@
 % Normalized Cut (inherently uses spatial data)
 
 % an implementation by "Naotoshi Seo" with a little modification is used 
-% for “normalized-cut” segmentation, available online at:
+% for ï¿½normalized-cutï¿½ segmentation, available online at:
 % "http://note.sonots.com/SciSoftware/NcutImageSegmentation.html"
 % it is sensitive in choosing parameters.
-% an implementation by "Bryan Feldman" is used for “mean-shift clustering" 
+% an implementation by "Bryan Feldman" is used for ï¿½mean-shift clustering" 
 
 % Alireza Asvadi
 % Department of ECE, SPR Lab
@@ -49,5 +49,5 @@ subplot(232); imshow(Ikm);  title(['Kmeans',' : ',num2str(K)]);
 subplot(233); imshow(Ikm2); title(['Kmeans+Spatial',' : ',num2str(K)]); 
 subplot(234); imshow(Ims);  title(['MeanShift',' : ',num2str(Nms)]);
 subplot(235); imshow(Ims2); title(['MeanShift+Spatial',' : ',num2str(Nms2)]);
-subplot(236); imshow(Inc);  title(['NormalizedCut',' : ',num2str(Nnc)]); 
+subplot(236); imshow(Inc);  title(['NormalizedCut',' : ',num2str(Nnc)]);
 
