@@ -9,7 +9,7 @@ function [disp_left,disp_right,IL,IR] = calculateDisparityMap(IL,IR, ...
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%Play with these for different results!
 max_disp=max_disp_factor*max_image_size;
-window_size=(window_size_factor*max_image_size*2)/2 +1;
+window_size=(window_size_factor*max_image_size*2)/2 +2;
 num_clusters=25;
 %%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -82,18 +82,18 @@ end
 
 
     %outlier compensation
-%     if(outlier_compensation)
-%         disp_l_fill=imgaussfilt(disp_left,20);
-%         disp_r_fill=imgaussfilt(disp_right,20);
-%         a=quantile(disp_left,0.05);
-%         b=quantile(disp_left,0.95);
-%         disp_left(disp_left<a)=disp_l_fill(disp_left<a);
-%         disp_left(disp_left>b)=disp_l_fill(disp_left>b);
-%         a=quantile(disp_right,0.05);
-%         b=quantile(disp_right,0.95);
-%         disp_right(disp_right<a)=disp_r_fill(disp_right<a);
-%         disp_right(disp_right>b)=disp_r_fill(disp_right>b);
-%     end
+    if(outlier_compensation)
+        disp_l_fill=imgaussfilt(disp_left,20);
+        disp_r_fill=imgaussfilt(disp_right,20);
+        a=quant(disp_left,0.05);
+        b=quant(disp_left,0.95);
+        disp_left(disp_left<a)=disp_l_fill(disp_left<a);
+        disp_left(disp_left>b)=disp_l_fill(disp_left>b);
+        a=quant(disp_right,0.05);
+        b=quant(disp_right,0.95);
+        disp_right(disp_right<a)=disp_r_fill(disp_right<a);
+        disp_right(disp_right>b)=disp_r_fill(disp_right>b);
+    end
     
     
 end
