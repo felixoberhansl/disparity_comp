@@ -71,8 +71,8 @@ end
 
 % size back to original
 if(size(IL,1)>max_image_size ||size(IL,2)>max_image_size)
-    disp_left=imresize(disp_left,[size(IL,1),size(IL,2)]);
-    disp_right=imresize(disp_right,[size(IR,1),size(IR,2)]);
+    disp_left=imresize2(disp_left,size(IL,1)/size(disp_left,1),(size(IL,2))/size(disp_left,2));
+    disp_right=imresize2(disp_right,size(IR,1)/size(disp_right,1),(size(IR,2))/size(disp_right,2));
     disp_left=disp_left*(1/size_factor);
     disp_right=disp_right*(1/size_factor);
     disp_left=int16(disp_left);
@@ -81,8 +81,8 @@ end
 
 %outlier compensation
 if(outlier_compensation)
-    disp_l_fill=imgaussfilt(disp_left,20);
-    disp_r_fill=imgaussfilt(disp_right,20);
+    disp_l_fill=gaussfilt(disp_left);
+    disp_r_fill=gaussfilt(disp_right);
     a=quant(disp_left,0.05);
     b=quant(disp_left,0.95);
     disp_left(disp_left<a)=disp_l_fill(disp_left<a);
