@@ -46,6 +46,7 @@ classdef start_gui < matlab.apps.AppBase
             %Display Disparity Map
             %disp_map=imread(app.D);
             imshow(uint8(app.D),[],'Parent',app.UIAxes);
+            colorbar(app.UIAxes);
             colormap(app.UIAxes, 'jet' );
             
             
@@ -80,7 +81,7 @@ classdef start_gui < matlab.apps.AppBase
 
         % Button pushed function: UnitestButton
         function UnitestButtonPushed(app, event)
-            rt = unittest();
+            rt = unittest(app.SourceImg);
             app.UITable2.Data = rt;
             
         end
@@ -193,7 +194,7 @@ classdef start_gui < matlab.apps.AppBase
 
             % Create UITable2
             app.UITable2 = uitable(app.UIFigure);
-            app.UITable2.ColumnName = {'Name'; 'Passed'; 'Failed'; 'Incomple'; 'Duration'; 'Reason(s)'};
+            app.UITable2.ColumnName = {'Name'; 'Passed'; 'Failed'; 'Incomple'; 'Duration'; 'Details'};
             app.UITable2.RowName = {};
             app.UITable2.DisplayDataChangedFcn = createCallbackFcn(app, @UITable2DisplayDataChanged, true);
             app.UITable2.Position = [310 18 515 175];
