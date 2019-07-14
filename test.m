@@ -55,7 +55,7 @@ classdef test < matlab.unittest.TestCase
             end
             
             function check_psnr(testCase)
-            challenge
+            challenge()
             Result = verify_dmap(double(rescale(D,0,255)), double(rescale(G,0,255)));
             Result_IPTB = psnr(double(rescale(D,0,255)), double(rescale(G,0,255)));
             tol = 0; 

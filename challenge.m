@@ -36,11 +36,10 @@ elapsed_time = toc(timer);
 %% Print Results
 % R, T, p, elapsed_time
 
-
 %% Display Disparity
 % plot
 figure
-imshow(uint8(D))
+imshow(uint8(D),[])
 title('Disparity Map')
 colormap jet
 colorbar
