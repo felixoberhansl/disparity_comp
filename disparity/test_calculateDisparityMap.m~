@@ -1,45 +1,19 @@
 clear
 addpath(genpath('../'));
 
-JL=imread('../data/sword/im0.png');
-JR=imread('../data/sword/im1.png');
+JL=imread('../data/playground/im0.png');
+JR=imread('../data/terrace/im1.png');
 window_size=0.01;
-max_disp_factor=0.3;
+max_disp_factor=0.33;
+max_image_size = 750;
 
-
-[disp_left,disp_right,~,~]=calculateDisparityMap(JL,JR,700,max_disp_factor,window_size,2,1,10);
+[disp_left,disp_right,~,~]=calculateDisparityMap(JL,JR,max_image_size,max_disp_factor,window_size,2,1,10);
 %plot
 figure
-imshow(uint8(disp_left))
+imshow(uint8(disp_left),[])
 colormap('jet')
-figure
-imshow(uint8(disp_right))
-colormap('jet')
-
-%% Post-Processing
-% Mean-Shift-Algorithm
-bandwith = 0.2;                     
-%test1=rgb2gray(Ms(JL, bandwith));
-test2 = rgb2gray(Ms2(JL, bandwith));
-segs = unique(test2);
-thr = 2;
-% for i = 1:size(segs,1)
-%    m = mode(disparityMap(test2==segs(i)));
-%    indizes = find(test2==segs(i));
-%    for j = 1:size(indizes,1)
-%        k = indizes(j);
-%        if (disparityMap(k) < m-thr) || (disparityMap(k) > m+thr)
-%            disparityMap(k) = 0;
-%        else
-%            disparityMap(k) = m;
-%        end
-%    end
-% end
-
-
+colorbar
 % figure
-% imagesc(disp_left);
-% figure
-% imagesc(disp_right);
-%save disparity_seq1.mat
-%*3 -294
+% imshow(uint8(disp_right))
+% colormap('jet')
+% colorbar

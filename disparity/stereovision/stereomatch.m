@@ -43,7 +43,6 @@ for Dc = 1 : D
    maxL = widthL + 1 - Dc;
    % probably not the fastest solution..?
    pcost(:, Dc : widthL, Dc ) = uint8(abs(int16(imgright( :, 1 : maxL)) - int16(imgleft( :, Dc : widthL))));
-   %pcost(:, Dc : widthL, Dc ) = imabsdiff( imgright( :, 1 : maxL), imgleft( :, Dc : widthL) );
 end
 
 % Calculate integral cost
@@ -67,7 +66,7 @@ for i = 1:size(icost,3)
     %filtering
     wcost(:,:,i) = filter2(h, icost_padded(:,:,i), 'valid');
 end
-% wcost = imfilter(icost,h,'same','symmetric');
+
 
 % Search disparity value
 [ dcost(:,D+WS2:widthL), dmap(:,D+WS2:widthL)] = min( wcost(:,D+WS2:widthL,:),[], 3 );
@@ -80,7 +79,6 @@ warning off;
 spdmap = single(dmap-1);
 
 % Subpixel interpolation
-
 if spacc==1
 for j=D+1:widthL
 for i=1:heightL
@@ -93,7 +91,7 @@ end
 end
 end
 
-%needed because the algorithm sometimes puts out weird values
+% needed because the algorithm sometimes puts out weird values
 spdmap=int16(spdmap);
 
 warning on;
