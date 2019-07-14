@@ -34,15 +34,15 @@ max_disp = max_disp_factor*size(IL,2);                                      % ma
 IL_prep=single(IL);
 IR_prep=single(IR);
 if(gauss_filt>0)
-    IL_prep=imgaussfilt(IL_prep,gauss_filt);
-    IR_prep=imgaussfilt(IR_prep,gauss_filt);
+    IL_prep=gaussfilt(IL_prep);
+    IR_prep=gaussfilt(IR_prep);
 end
 
 % image resizing
 if(max(size(IL))>max_image_size)
     size_factor=max_image_size/max(size(IL));
-    IL_prep=imresize(IL_prep,size_factor);
-    IR_prep=imresize(IR_prep,size_factor);
+    IL_prep=imresize2(IL_prep,size_factor,size_factor);
+    IR_prep=imresize2(IR_prep,size_factor,size_factor);
 end
 
 %--------------------------------------------------------------------------
