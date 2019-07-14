@@ -31,7 +31,7 @@ G = readpfm(gt_path+"/disp0.pfm");
 p = verify_dmap(rescale(D,0,255), rescale(G,0,255));
 
 %% Stop timer here
-elapsed_time = toc(timer);
+elapsed_time = toc(timer)
 
 %% Print Results
 % R, T, p, elapsed_time

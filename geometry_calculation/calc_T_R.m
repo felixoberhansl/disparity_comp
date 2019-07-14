@@ -1,17 +1,4 @@
-function [T, R, E] = calc_T_R(scene_path)
-
-% add subfolders
-addpath(genpath('../'));
-
-% import data
-img1 = imread(fullfile(scene_path, 'im0.png'));
-img2 = imread(fullfile(scene_path, 'im1.png'));
-eval(fileread(fullfile(scene_path, 'calib.txt')));                      % execute code in the calib.txt file to get the calibration parameters
-
-% check data
-if size(img1) ~= size(img2)
-    error('The size of the images does not match!')
-end
+function [T, R, E] = calc_T_R(img1, img2, cam0)
 
 % preprocessing images
 img1gray = double(rgb2gray(img1));
@@ -41,7 +28,7 @@ E = eightpointalgorithm(robustCorrespondences, cam0);
 
 %% Euclidean movement
 % compute possible values for T and R
-[T1,R1,T2,R2,~,~] = TR_from_E(E);
+[T1,R1,T2,R2,~,~] = TR_from_E(-E);
 
 % estimate correct T and R
 [T, R, ~,~,~] = rekonstruction(T1, T2, R1, R2, correspondences, cam0);

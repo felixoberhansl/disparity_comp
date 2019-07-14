@@ -4,7 +4,9 @@ function [D, R, T] = disparity_map(scene_path)
 % motion is returned as Rotation R and Translation T.
 
 %% add subfolders
-addpath(genpath('..\'));
+addpath('data');
+addpath('disparity');
+addpath('geometry_calculation');
 addpath(scene_path);
 
 
@@ -27,8 +29,10 @@ D = disp_left;
 
 % calculate translation and rotation
 
-T = [baseline/1000; 0; 0];
-R = [1 0 0; 0 1 0; 0 0 1];
+[T,R,~] = calc_T_R(img1, img2, cam0);
+
+% T = [baseline/1000; 0; 0];
+% R = [1 0 0; 0 1 0; 0 0 1];
 
 end
 
