@@ -1,7 +1,6 @@
 function [D, R, T, p] = challenge(scene_path)
 
 %% Computer Vision Challenge 2019
-
 % Group number:
 group_number = 33;
 
@@ -43,4 +42,5 @@ imshow(uint8(D),[])
 title('Disparity Map')
 colormap jet
 colorbar
+save challenge.mat
 end
