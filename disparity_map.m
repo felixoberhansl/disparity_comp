@@ -27,7 +27,7 @@ D = disp_left;
 
 % calculate translation and rotation
 
-T = [baseline; 0; 0];
+T = [baseline/1000; 0; 0];
 R = [1 0 0; 0 1 0; 0 0 1];
 
 end
