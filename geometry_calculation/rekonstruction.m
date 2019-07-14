@@ -22,11 +22,11 @@ function [T, R, lambda, M1, M2] = rekonstruction(T1, T2, R1, R2, correspondences
     % 1. build M1 and M2
     for i = 1:4
         for j = 1:N
-            M1(1+(j-1)*3 : 3+(j-1)*3, j) = skew(x2(:,j)) * R_cell{i} * x1(:,j);
-            M1(1+(j-1)*3 : 3+(j-1)*3, N+1) = skew(x2(:,j)) * T_cell{i};       % last col in M
+            M1(1+(j-1)*3 : 3+(j-1)*3, j) = hat(x2(:,j)) * R_cell{i} * x1(:,j);
+            M1(1+(j-1)*3 : 3+(j-1)*3, N+1) = hat(x2(:,j)) * T_cell{i};       % last col in M
             
-            M2(1+(j-1)*3 : 3+(j-1)*3, j) = skew(x1(:,j)) * R_cell{i}.' * x2(:,j);
-            M2(1+(j-1)*3 : 3+(j-1)*3, N+1) = -skew(x1(:,j)) * R_cell{i}.' * T_cell{i};       % last col in M
+            M2(1+(j-1)*3 : 3+(j-1)*3, j) = hat(x1(:,j)) * R_cell{i}.' * x2(:,j);
+            M2(1+(j-1)*3 : 3+(j-1)*3, N+1) = -hat(x1(:,j)) * R_cell{i}.' * T_cell{i};       % last col in M
         end
         
         % 2. compute d1 and d2
@@ -55,11 +55,4 @@ function [T, R, lambda, M1, M2] = rekonstruction(T1, T2, R1, R2, correspondences
     R = R_cell{bestCombi};
     lambda = d_cell{bestCombi};
     
-end
-
-
-function [xhat]=skew(x)
-xhat = [0 -x(3) x(2); 
-        x(3) 0 -x(1); 
-        -x(2) x(1) 0];
 end
