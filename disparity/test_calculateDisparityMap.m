@@ -3,8 +3,8 @@
 clear
 addpath(genpath('d:\git\cv_challenge_33\'));
 
-JL=imread('../data/motorcycle/im0.png');
-JR=imread('../data/motorcycle/im1.png');
+JL=imread('data/motorcycle/im0.png');
+JR=imread('data/motorcycle/im1.png');
 window_size=0.01;
 max_disp_factor=0.3;
 

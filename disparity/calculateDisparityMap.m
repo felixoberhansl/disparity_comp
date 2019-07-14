@@ -9,7 +9,7 @@ function [disp_left,disp_right,IL,IR] = calculateDisparityMap(IL,IR, ...
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%Play with these for different results!
 max_disp=max_disp_factor*max_image_size;
-window_size=(window_size_factor*max_image_size*2)/2 +1;
+window_size=(window_size_factor*max_image_size*2)/2 +2;
 num_clusters=25;
 %%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -20,8 +20,8 @@ num_clusters=25;
 IL_prep=single(IL);
 IR_prep=single(IR);
 if(gauss_filt>0)
-    IL_prep=imgaussfilt(IL_prep,gauss_filt);
-    IR_prep=imgaussfilt(IR_prep,gauss_filt);
+    IL_prep=gaussfilt(IL_prep);
+    IR_prep=gaussfilt(IR_prep);
 end
 
 if(size(IL)~= size(IR))
@@ -37,8 +37,8 @@ IR_prep=[IR_prep bm];
 
 if(max(size(IL))>max_image_size)
     size_factor=max_image_size/max(size(IL));
-    IL_prep=imresize(IL_prep,size_factor);
-    IR_prep=imresize(IR_prep,size_factor);
+    IL_prep=imresize2(IL_prep,size_factor,size_factor);
+    IR_prep=imresize2(IR_prep,size_factor,size_factor);
 
     %save uncompensated images for output
 end
@@ -55,16 +55,16 @@ end
     disp_right(disp_right>=max_disp)=max_disp;
     disp_right(disp_right<=-max_disp)=-max_disp;
     
-    if(median_filter~=0)
-        disp_left=medFilter(disp_left,median_filter);
-        disp_right=medFilter(disp_right,median_filter);
-    end
+   % if(median_filter~=0)
+   %    disp_left=medFilter(disp_left,median_filter);
+   %    disp_right=medFilter(disp_right,median_filter);
+   % end
 
     %size back to original if needed
     if(size(IL,1)>max_image_size ||size(IL,2)>max_image_size)
 
-        disp_left=imresize(disp_left,[size(IL,1),size(IL,2)+offset]);
-        disp_right=imresize(disp_right,[size(IR,1),size(IR,2)+offset]);
+        disp_left= imresize2(disp_left,size(IL,1)/size(disp_left,1),(size(IL,2)+offset)/size(disp_left,2));
+        disp_right=imresize2(disp_right,size(IR,1)/size(disp_right,1),(size(IR,2)+offset)/size(disp_right,2));
         disp_left=disp_left*(1/size_factor);
         disp_right=disp_right*(1/size_factor);
         disp_left=int16(disp_left);

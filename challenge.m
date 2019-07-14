@@ -9,7 +9,7 @@ members = {'Henrique Cabral Meneses de Almeida e Sousa','Manuel Lengl','Felix Ob
 
 % Email-Address (from Moodle!):
 % mail = {'ga99abc@tum.de', 'daten.hannes@tum.de'};
-mail = {'ge49ceg@mytum.de','ge49puw@mytum.de','ge36xok@mytum.de','ge25fin@mytum.de','ge25yod@mytum.de'};
+mail = {'ge49ceg@mytum.de','m.lengl@tum.de','felix.oberhansl@tum.de','ge25fin@mytum.de','ge25yod@mytum.de'};
 
 %% Start timer here
 timer = tic;
@@ -32,7 +32,7 @@ timer = tic;
  
  
 % Estimate the quality of the calculated disparity map
- p = verify_dmap(uint8(D), uint8(G));
+ p = verify_dmap(rescale(D,0,255), rescale(G,0,255));
 
 %% Stop timer here
 elapsed_time = toc(timer);
