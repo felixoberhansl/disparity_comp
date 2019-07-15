@@ -25,7 +25,7 @@ window_size = 11;
 max_disp_factor = 0.05;
 max_image_size = 750;
 [disp_left,disp_right]=calculateDisparityMap(img1,img2,max_image_size,max_disp_factor,window_size,2,1,10);
-D = disp_left;
+D = uint8(disp_left);
 
 % calculate translation and rotation
 
