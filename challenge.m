@@ -1,7 +1,6 @@
 function [D, R, T, p] = challenge(scene_path)
 
 %% Computer Vision Challenge 2019
-
 % Group number:
 group_number = 33;
 
@@ -25,17 +24,17 @@ timer = tic;
 gt_path = scene_path;
 %
 % Load the ground truth
-G = readpfm(gt_path+"/disp0.pfm");
+%G = readpfm(gt_path+"/disp0.pfm");
 
 % Estimate the quality of the calculated disparity map
-p = verify_dmap(rescale(D,0,255), rescale(G,0,255));
+%p = verify_dmap(uint8(D),uint8(G));
+p = 0;
 
 %% Stop timer here
 elapsed_time = toc(timer)
 
 %% Print Results
 % R, T, p, elapsed_time
-
 
 %% Display Disparity
 % plot
@@ -44,4 +43,5 @@ imshow(uint8(D),[])
 title('Disparity Map')
 colormap jet
 colorbar
+save challenge.mat
 end
