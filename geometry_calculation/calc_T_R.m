@@ -28,7 +28,7 @@ E = eightpointalgorithm(robustCorrespondences, cam0);
 
 %% Euclidean movement
 % compute possible values for T and R
-[T1,R1,T2,R2,~,~] = TR_from_E(-E);
+[T1,R1,T2,R2,~,~] = TR_from_E(E);
 
 % estimate correct T and R
 [T, R, ~,~,~] = rekonstruction(T1, T2, R1, R2, correspondences, cam0);
