@@ -30,7 +30,7 @@ classdef test < matlab.unittest.TestCase
                             VarElement = cell2mat(VarElements(i));
                             assert(strcmp(convertCharsToStrings(VarElement),"") == 0, "Not all variables are set in file challenge.m! "+ mat2str(VarElement) ) 
                         end
-                    elseif (ischar(VarElements) == 0)
+                    elseif ((ischar(VarElements) || isstring(VarElements)) == 0)
                         VarElements = double(VarElements);
                         assert(norm(VarElements) > 0, "Not all variables are set in file challenge.m! "+ mat2str(VarElements) )
                         assert(isempty(VarElements) == 0, "Empty variable(s) in file challenge.m!" + mat2str(VarElements) )

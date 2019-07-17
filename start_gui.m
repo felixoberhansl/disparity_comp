@@ -89,10 +89,12 @@ classdef start_gui < matlab.apps.AppBase
         % Button pushed function: ChooseFolderButton
         function ChooseFolderButtonPushed(app, event)
             selpath = uigetdir;
-            app.SourceImg= selpath;
             addpath(selpath);
-            app.Image.ImageSource=strcat(app.SourceImg,"\im0.png");
-            app.Image2.ImageSource=strcat(app.SourceImg,"\im1.png");
+            app.SourceImg= selpath;
+            app.Image.ImageSource=fullfile(app.SourceImg,"im0.png");
+            app.Image2.ImageSource=fullfile(app.SourceImg,"im1.png");
+            %app.Image.ImageSource=strcat(app.SourceImg,"/im0.png");
+            %app.Image2.ImageSource=strcat(app.SourceImg,"/im1.png");
 
             
         end
@@ -135,12 +137,12 @@ classdef start_gui < matlab.apps.AppBase
             app.Image = uiimage(app.UIFigure);
             app.Image.ImageClickedFcn = createCallbackFcn(app, @ImageClicked, true);
             app.Image.Position = [29 202 240 157];
-            app.Image.ImageSource = 'im0.png';
+            %app.Image.ImageSource = '/im0.png';
 
             % Create Image2
             app.Image2 = uiimage(app.UIFigure);
             app.Image2.Position = [29 20 238 157];
-            app.Image2.ImageSource = 'im1.png';
+            %app.Image2.ImageSource = '/im1.png';
 
             % Create ChallengeButton
             app.ChallengeButton = uibutton(app.UIFigure, 'push');
