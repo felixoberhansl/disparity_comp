@@ -3,12 +3,18 @@ function filteredA = medFilter(A,n)
 % additional toolboxes
 
     A = uint8(A);
-
+    
     if mod(n,2) == 0
         n = n+1;
     end
     
     n2 = ceil(n/2);
+    
+    
+    A_padded = zeros(size(A,1)+(n2-1)*2, size(A,2)+(n2-1)*2);
+
+    A_padded(n2:size(A,1)+n2-1,n2:size(A,2)+n2-1) = A;
+
     
     % Plus & Cross masks
     Plus = zeros(n,n);
@@ -26,14 +32,20 @@ function filteredA = medFilter(A,n)
     filteredA = uint8(zeros(size(A,1), size(A,2)));
     
     roi = uint8(zeros(n,n));  
+    
+    r_padded = 0;
+    c_padded = 0;
 
-    for r = n2:size(A,1)-n2
+    for r = 1:size(A,1)
         
-        for c = n2:size(A,2)-n2
+        for c = 1:size(A,2)
             
-            roi = A((r-n2+1):(r+n2-1),(c-n2+1):(c+n2-1));
+            r_padded = r + n2 -1;
+            c_padded = c + n2 -1;
             
-            filteredA(r,c) = median_calc([median_calc(roi(Plus~=0)); median_calc(roi(Cross~=0)); A(r,c)]);
+            roi = A_padded((r_padded-n2+1):(r_padded+n2-1),(c_padded-n2+1):(c_padded+n2-1));
+            
+            filteredA(r,c) = median_calc([median_calc(roi(Plus~=0)); median_calc(roi(Cross~=0)); A_padded(r_padded,c_padded)]);
             
             
         end
