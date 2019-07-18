@@ -6,11 +6,11 @@ function [T1, R1, T2, R2, U, V]=TR_from_E(E)
     [U, S, V] = svd(E);
 
     % check if U is a rotational matrix
-    if det(U) ~= 1                      % condition for rotation matrix: det() = 1
+    if uint8(det(U)) ~= 1                      % condition for rotation matrix: det() = 1
         U = U*diag([1 1 -1]);            %                               orthogonal cols (always the case)
     end
     
-    if det(V) ~= 1                      
+    if uint8(det(V)) ~= 1                      
         V = V*diag([1 1 -1]);
     end
     

@@ -63,7 +63,7 @@ disp_left(disp_left<=-max_disp)=-max_disp;
 disp_right(disp_right>=max_disp)=max_disp;
 disp_right(disp_right<=-max_disp)=-max_disp;
 
-% median filtering
+median filtering
 if(median_filter~=0)
     disp_left=medFilter(disp_left,median_filter);
     disp_right=medFilter(disp_right,median_filter);

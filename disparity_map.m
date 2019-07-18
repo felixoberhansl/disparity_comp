@@ -3,6 +3,8 @@ function [D, R, T] = disparity_map(scene_path)
 % disparity map of the included stereo image pair. Also, the Euclidean
 % motion is returned as Rotation R and Translation T.
 
+timer_disparity = tic;
+
 %% add subfolders
 addpath('data');
 addpath('disparity');
@@ -27,9 +29,14 @@ max_image_size = 750;
 [disp_left,disp_right]=calculateDisparityMap(img1,img2,max_image_size,max_disp_factor,window_size,2,1,10);
 D = uint8(disp_left);
 
+elapsed_time_disparity = toc(timer_disparity)
+
 % calculate translation and rotation
+timer_TandR = tic;
 
 [T,R,~] = calc_T_R(img1, img2, cam0);
+
+elapsed_time_TandR = toc(timer_TandR)
 
 % T = [baseline/1000; 0; 0];
 % R = [1 0 0; 0 1 0; 0 0 1];

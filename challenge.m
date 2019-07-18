@@ -11,13 +11,11 @@ members = {'Henrique Cabral Meneses de Almeida e Sousa','Manuel Lengl','Felix Ob
 mail = {'ge49ceg@mytum.de','m.lengl@tum.de','felix.oberhansl@tum.de','ge25fin@mytum.de','ge25yod@mytum.de'};
 
 %% Start timer here
-timer = tic;
-
+timer_total = tic;
 
 %% Disparity Map
 % Calculate disparity map and Euclidean motion
 [D, R, T] = disparity_map(scene_path);
-
 
 %% Validation
 % Specify path to ground truth disparity map
@@ -30,7 +28,7 @@ G = readpfm(gt_path+"/disp0.pfm");
 p = verify_dmap(uint8(D),uint8(G));
 
 %% Stop timer here
-elapsed_time = toc(timer)
+elapsed_time_total = toc(timer_total)
 
 %% Print Results
 % R, T, p, elapsed_time
@@ -39,8 +37,9 @@ elapsed_time = toc(timer)
 % plot
 figure
 imshow(uint8(D),[])
-title('Disparity Map')
+title('\fontsize{16} Disparity Map')
 colormap jet
-colorbar
+c = colorbar;
+c.FontSize = 12;
 save challenge.mat
 end
